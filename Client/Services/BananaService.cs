@@ -13,6 +13,12 @@ namespace BlazorWasm.Client.Services
       BananasChanged();
     }
 
+    public void EarnBananas(int amount)
+    {
+      Bananas += amount;
+      BananasChanged();
+    }
+
     void BananasChanged() => OnChange.Invoke();
   }
 }

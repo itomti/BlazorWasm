@@ -1,3 +1,4 @@
+using Blazored.Toast;
 using BlazorWasm.Client.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -18,8 +19,10 @@ namespace BlazorWasm.Client
       var builder = WebAssemblyHostBuilder.CreateDefault(args);
       builder.RootComponents.Add<App>("app");
 
+      builder.Services.AddBlazoredToast();
       builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
       builder.Services.AddScoped<IBananaService, BananaService>();
+      builder.Services.AddScoped<IUnitService, UnitService>();
 
       await builder.Build().RunAsync();
     }

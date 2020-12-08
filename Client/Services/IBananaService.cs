@@ -8,5 +8,6 @@ namespace BlazorWasm.Client.Services
     int Bananas { get; set; }
 
     void EatBananas(int amount);
+    void EarnBananas(int amount);
   }
 }
