@@ -7,50 +7,50 @@
 <h3>Your Current Army</h3>
 @if (UnitService.Units.Count > 0)
 {
-	<center>
-		<button class="btn btn-warning" @onclick="ReviveArmy">Revive your army!</button>
-	</center>
-	@foreach (var userUnit in UnitService.UserUnits)
-	{
-		<div class="army-list">
-			<div>
-				@switch (userUnit.UnitId)
-				{
-					case 1:
-							<img src="icons/W_Sword006.png" />
-						break;
-					case 2:
-							<img src="icons/S_Bow08.png" />
-						break;
-					case 3:
-							<img src="icons/C_Hat01.png" />
-						break;
-				}
-			</div>
-			<div>
-				@UnitService.Units.First(unit => unit.Id == userUnit.UnitId).Title
-			</div>
-			<div>
-				@userUnit.Health HP
-			</div>
-		</div>
-	}
+  <center>
+    <button class="btn btn-warning" @onclick="ReviveArmy">Revive your army!</button>
+  </center>
+  @foreach (var userUnit in UnitService.UserUnits)
+  {
+    <div class="army-list">
+      <div>
+        @switch (userUnit.UnitId)
+        {
+          case 1:
+            <img src="icons/W_Sword006.png" />
+            break;
+          case 2:
+            <img src="icons/S_Bow08.png" />
+            break;
+          case 3:
+            <img src="icons/C_Hat01.png" />
+            break;
+        }
+      </div>
+      <div>
+        @UnitService.Units.First(unit => unit.Id == userUnit.UnitId).Title
+      </div>
+      <div>
+        @userUnit.Health HP
+      </div>
+    </div>
+  }
 }
 else
-{ 
-	<span>Loading units...</span>
+{
+  <span>Loading units...</span>
 }
 
-@code 
+@code
 {
-	protected override async Task OnInitializedAsync()
-	{
-		await UnitService.LoadUnitsAsync();
-		await UnitService.LoadUserUnitsAsync();
-	}
+  protected override async Task OnInitializedAsync()
+  {
+    await UnitService.LoadUnitsAsync();
+    await UnitService.LoadUserUnitsAsync();
+  }
 
-	private async Task ReviveArmy()
-	{
-		await UnitService.ReviveArmy();
-	}
+  private async Task ReviveArmy()
+  {
+    await UnitService.ReviveArmy();
+  }
 }

@@ -2,29 +2,29 @@
 @inject BlazorWasm.Client.Services.IBananaService BananaService
 
 <AuthorizeView>
-	<Authorized>
-		<div class="top-menu">
-			<img src="icons/I_C_Banana.png" />
-			<span class="popover-header">@BananaService.Bananas</span>
-		</div>
-	</Authorized>
-	<NotAuthorized>
-		<div>
-			<NavLink href="">Login |</NavLink>
-			<NavLink href="register">Register</NavLink>
-		</div>
-	</NotAuthorized>
+  <Authorized>
+    <div class="top-menu">
+      <img src="icons/I_C_Banana.png" />
+      <span class="popover-header">@BananaService.Bananas</span>
+    </div>
+  </Authorized>
+  <NotAuthorized>
+    <div>
+      <NavLink href="">Login |</NavLink>
+      <NavLink href="register">Register</NavLink>
+    </div>
+  </NotAuthorized>
 </AuthorizeView>
 
 @code {
-	protected override void OnInitialized()
-	{
-		base.OnInitialized();
-		BananaService.OnBananaChange += StateHasChanged;
-	}
+  protected override void OnInitialized()
+  {
+    base.OnInitialized();
+    BananaService.OnBananaChange += StateHasChanged;
+  }
 
-	public void Dispose()
-	{
-		BananaService.OnBananaChange -= StateHasChanged;
-	}
+  public void Dispose()
+  {
+    BananaService.OnBananaChange -= StateHasChanged;
+  }
 }

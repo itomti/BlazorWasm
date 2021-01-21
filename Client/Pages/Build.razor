@@ -6,36 +6,36 @@
 @attribute [Authorize]
 
 <div class="form-group">
-	<select @bind="selectedUnitId" class="form-control">
-		@foreach (var unit in UnitService.Units)
-		{ 
-			<option value="@unit.Id">@unit.Title // @unit.Cost Bananas</option>
-		}
-	</select>
+  <select @bind="selectedUnitId" class="form-control">
+    @foreach (var unit in UnitService.Units)
+    {
+      <option value="@unit.Id">@unit.Title // @unit.Cost Bananas</option>
+    }
+  </select>
 </div>
 
 <button @onclick="() => BuildUnit()" class="btn btn-primary">Build</button>
 
 
 @code {
-	private void EatBananas(int amount)
-	{
-		BananaService.EatBananas(amount);
-	}
+  private void EatBananas(int amount)
+  {
+    BananaService.EatBananas(amount);
+  }
 
-	private void EarnBananas(int amount)
-	{
-		BananaService.EarnBananas(amount);
-	}
+  private void EarnBananas(int amount)
+  {
+    BananaService.EarnBananas(amount);
+  }
 
-	int selectedUnitId = 1;
-	private async Task BuildUnit()
-	{
-		await UnitService.AddUnit(selectedUnitId);
-	}
+  int selectedUnitId = 1;
+  private async Task BuildUnit()
+  {
+    await UnitService.AddUnit(selectedUnitId);
+  }
 
-	protected override async Task OnInitializedAsync()
-	{
-		await UnitService.LoadUnitsAsync();
-	}
+  protected override async Task OnInitializedAsync()
+  {
+    await UnitService.LoadUnitsAsync();
+  }
 }
