@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace BlazorWasm.Client.Services
 {
   public interface IBananaService
   {
-    event Action OnChange;
+    event Action OnBananaChange;
     int Bananas { get; set; }
 
     void EatBananas(int amount);
-    void EarnBananas(int amount);
+    Task EarnBananas(int amount);
+    Task GetBananas();
   }
 }

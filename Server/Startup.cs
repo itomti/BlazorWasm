@@ -1,11 +1,18 @@
+using BlazorWasm.Server.Data;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using System.Linq;
+using System.Text;
+using Microsoft.AspNetCore.Http;
+using BlazorWasm.Server.Services;
 
 namespace BlazorWasm.Server
 {
@@ -23,8 +30,23 @@ namespace BlazorWasm.Server
     public void ConfigureServices(IServiceCollection services)
     {
 
+      services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
       services.AddControllersWithViews();
       services.AddRazorPages();
+      services.AddScoped<IAuthRepository, AuthRepository>();
+      services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+          options.TokenValidationParameters = new TokenValidationParameters
+          {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Token").Value)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+          };
+        });
+      services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+      services.AddScoped<IUtilityService, UtilityService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,6 +69,9 @@ namespace BlazorWasm.Server
       app.UseStaticFiles();
 
       app.UseRouting();
+
+      app.UseAuthentication();
+      app.UseAuthorization();
 
       app.UseEndpoints(endpoints =>
       {

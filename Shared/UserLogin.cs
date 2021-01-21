@@ -9,9 +9,9 @@ namespace BlazorWasm.Shared
 {
   public class UserLogin
   {
-    [Required]
-    public string Username { get; set; }
-    [Required]
+    [Required(ErrorMessage = "Please enter an e-mail address.")]
+    public string Email { get; set; }
+    [Required(ErrorMessage = "Please enter a password.")]
     public string Password { get; set; }
   }
 }

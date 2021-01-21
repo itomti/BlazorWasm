@@ -1,20 +1,30 @@
 ﻿@implements IDisposable
 @inject BlazorWasm.Client.Services.IBananaService BananaService
 
-<div class="top-menu">
-	<img src="icons/I_C_Banana.png" />
-	<span class="popover-header">@BananaService.Bananas</span>
-</div>
+<AuthorizeView>
+	<Authorized>
+		<div class="top-menu">
+			<img src="icons/I_C_Banana.png" />
+			<span class="popover-header">@BananaService.Bananas</span>
+		</div>
+	</Authorized>
+	<NotAuthorized>
+		<div>
+			<NavLink href="">Login |</NavLink>
+			<NavLink href="register">Register</NavLink>
+		</div>
+	</NotAuthorized>
+</AuthorizeView>
 
 @code {
 	protected override void OnInitialized()
 	{
 		base.OnInitialized();
-		BananaService.OnChange += StateHasChanged;
+		BananaService.OnBananaChange += StateHasChanged;
 	}
 
 	public void Dispose()
 	{
-		BananaService.OnChange -= StateHasChanged;
+		BananaService.OnBananaChange -= StateHasChanged;
 	}
 }

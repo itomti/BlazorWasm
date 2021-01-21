@@ -3,6 +3,7 @@
 @inject BlazorWasm.Client.Services.IBananaService BananaService
 @inject BlazorWasm.Client.Services.IUnitService UnitService
 @inject IToastService ToastService
+@attribute [Authorize]
 
 <div class="form-group">
 	<select @bind="selectedUnitId" class="form-control">
@@ -15,16 +16,8 @@
 
 <button @onclick="() => BuildUnit()" class="btn btn-primary">Build</button>
 
-@if (needMoreBananas)
-{ 
-	<div class="validation-message">
-		Not Enough Bananas!
-	</div>
-}
 
 @code {
-	private bool needMoreBananas = false;
-
 	private void EatBananas(int amount)
 	{
 		BananaService.EatBananas(amount);
@@ -36,16 +29,13 @@
 	}
 
 	int selectedUnitId = 1;
-	private void BuildUnit()
+	private async Task BuildUnit()
 	{
-		BlazorWasm.Shared.Unit selectedUnit = UnitService.Units.FirstOrDefault(UnitService => UnitService.Id == selectedUnitId);
-		if (BananaService.Bananas < selectedUnit.Cost)
-		{
-			needMoreBananas = true;
-			ToastService.ShowError("Not Enough Bananas!", ":(");
-			return;
-		}
-		BananaService.EatBananas(selectedUnit.Cost);
-		UnitService.AddUnit(selectedUnitId);
+		await UnitService.AddUnit(selectedUnitId);
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		await UnitService.LoadUnitsAsync();
 	}
 }

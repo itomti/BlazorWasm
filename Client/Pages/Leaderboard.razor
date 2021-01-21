@@ -1,0 +1,98 @@
+﻿@page "/leaderboard"
+@inject BlazorWasm.Client.Services.ILeaderboardService LeaderboardService
+@inject AuthenticationStateProvider AuthStateProvider
+@inject BlazorWasm.Client.Services.IBattleService BattleService
+@inject BlazorWasm.Client.Services.IBananaService BananaService
+@inject IToastService ToastService 
+@inject NavigationManager NavigationManager
+
+<h3>Leaderboard</h3>
+
+@if (LeaderboardService.Leaderboard == null)
+{
+	<span>
+		Leaderboard is loading...
+	</span>
+}
+else
+{
+	<table class="table">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>User</th>
+				<th>Battles</th>
+				<th>Victories</th>
+				<th>Defeats</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var entry in LeaderboardService.Leaderboard)
+			{ 
+				<tr style="@GetMyStyle(entry.UserId)">
+					<td>@entry.Rank</td>
+					<td>@entry.Username</td>
+					<td>@entry.Battles</td>
+					<td>@entry.Victories</td>
+					<td>@entry.Defeats</td>
+					<td>
+						@if (entry.UserId != myUserId)
+						{
+							<button class="btn btn-primary" @onclick="@(() => StartBattle(entry.UserId))">Fight</button>
+						}
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+@code 
+{
+	private int myUserId;
+	protected override async Task OnInitializedAsync()
+	{
+		await LeaderboardService.GetLeaderboard();
+		var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+		myUserId = int.Parse(authState.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+	}
+
+	public string GetMyStyle(int userId)
+	{
+		if (userId == myUserId)
+		{
+			return "color: green; font-weight: 600;";
+		}
+		else
+		{
+			return string.Empty;
+		}
+	}
+
+	public async Task StartBattle(int opponentId)
+	{
+		var result = await BattleService.StartBattle(opponentId);
+
+		if (result.RoundsFought <= 0)
+		{
+			ToastService.ShowInfo("The battle did not take place", "Info");
+		}
+		else if (result.IsVictory)
+		{
+			ToastService.ShowSuccess("You won the battle!", "Success");
+		}
+		else
+		{
+			ToastService.ShowWarning("You have been defeated!", ":(");
+		}
+
+		await LeaderboardService.GetLeaderboard();
+		await BananaService.GetBananas();
+
+		if (result.RoundsFought > 0)
+		{
+			NavigationManager.NavigateTo("battlelog");
+		}
+	}
+}

@@ -129,6 +129,14 @@ app {
     padding: 10px;
 }
 
+.app-loading {
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+    padding-right: 0px;
+    padding-left: 0px;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
